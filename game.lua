@@ -51,6 +51,7 @@ main_menue_item = 1
 selected_state_idx = 1
 
 
+
 ----------------------------------------------------------- 
 -- special data fields for debugging / testing only 
 ----------------------------------------------------------- 
@@ -111,54 +112,17 @@ end
  
  --new game
 function game.new()
+
    sample_state:startup()
+   sample_state:set_key_handle(handle_keys)
 end
 
  
 
 function game.play(dt) 
 
-    
-
-  for key,v in pairs(key_list)do
-      attack   = false
-      movement = {x=0,y=0}
-      
-      --print("got some id",plid)
-      
-        --print(key,v)
-        local action=handle_keys(key)--get key callbacks
-        
-        
-        
-        if action["move"] and game_state==GameStates.PLAYING then
-            movement.x=movement.x+action["move"][1]
-            movement.y=movement.y+action["move"][2]
-        end
-        
-        
-        if action["exit"]  then
-            
-            if exit_timer +0.3 < love.timer.getTime() then
-                love.event.quit()
-            end
-            
-        end
-        
-        
-        if action["attack"] then
-            attack = true
-            
-        end
-      
-  end
- 
-  sample_state:update()
+  sample_state:update(dt,key_list)
   
-  
-  -- Enemy behaviour basic / Enemy turn
-  
-
 end 
  
  
