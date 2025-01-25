@@ -58,11 +58,12 @@ function sample_state:update(dt, key_list)
     if action["move"] and game_state == GameStates.PLAYING then
       movement.x = movement.x + action["move"][1]
       movement.y = movement.y + action["move"][2]
+
+      active_player:move(movement.x, movement.y, dt)
     end
 
-    active_player:move(movement.x,movement.y)
-
   end
+
 
   for idx, enemy_obj in pairs(enemies) do
     enemy_obj:update(dt, active_player)

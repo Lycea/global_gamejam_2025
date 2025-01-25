@@ -31,7 +31,7 @@ end
 
 function stage_handler:update(dt)
  if self.spawn_timer:check() == true then
-   local pos_x,pos_y = calculate_point(self.player.pos, 100,150 )
+   local pos_x,pos_y = calculate_point(self.player.pos, 400,400 )
    table.insert(self.enemy_list,enemy(pos_x,pos_y,20,20,5))
  end
 end

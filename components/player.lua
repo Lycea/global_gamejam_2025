@@ -10,7 +10,8 @@ function player:new()
  self.invis_timer = timer(self.invis_time)
  self.alive = true
  self.size = {w=20,h=20}
-
+ self.norm_speed = 40
+ self.cur_speed = self.norm_speed
 end
 
 
@@ -20,9 +21,13 @@ function player:draw()
   self.weapon:draw()
 end
 
-function player:move(x,y)
-  self.pos.x = self.pos.x + x
-  self.pos.y = self.pos.y + y
+function player:move(x,y,dt)
+  x=x*self.cur_speed
+  y=y*self.cur_speed
+
+  print(x,y)
+  self.pos.x = self.pos.x + (x  * dt)
+  self.pos.y = self.pos.y + (y * dt)
 end
 
 function player:update()

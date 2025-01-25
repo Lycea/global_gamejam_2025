@@ -24,7 +24,7 @@ function enemy:new(x,y,w,h,max_hp)
   self.max_hp = max_hp
   self.current_hp = self.max_hp
   self.size={w=w,h=h}
-  self.speed = 0.03
+  self.speed = 30
   self.dmg=5
 end
 
@@ -36,7 +36,7 @@ end
 function enemy:update(dt , goal)
   local dist = distance(self.pos, goal.pos)
 
-  local perc_to_move =  self.speed / dist
+  local perc_to_move =  (self.speed * dt) / dist
 
   local new_x,new_y = lerp_point(self.pos.x,self.pos.y,goal.pos.x,goal.pos.y,perc_to_move)
  self.pos.x = new_x
