@@ -13,10 +13,13 @@ class_base= require("helper.classic")
 console =require("helper.console")
 timer =require("helper.timer")
 
+h_=require("helper.helpers")
+
 game =require("game")
 
 
 
+local profile = false
 
 
 local maj,min,rev=love.getVersion()
@@ -32,6 +35,12 @@ last_axis_2_angle = 0
 
 function love.load(args)
   
+
+  if profile == true then
+    love.profiler = require('helper.profil')
+    love.profiler.start()
+  end
+
   for idx, arg in pairs(args) do
       if arg == "-debug" then
         debuger = require("mobdebug")
@@ -49,15 +58,27 @@ function love.load(args)
   --love.keyboard.setKeyRepeat(true)
 end
 
-
+love.frame = 0
 function love.update(dt)
+
+  if profile == true then
+    love.frame = love.frame + 1
+    if love.frame % 100 == 0 then
+      love.report = love.profiler.report(20)
+      love.profiler.reset()
+    end
+  end
+
   game.update(dt)
-  
   
 end
 
 function love.draw()
   game.draw()
+
+  if profile == true then
+    love.graphics.print(love.report or "Please wait...")
+  end
 end
 
 
@@ -82,7 +103,8 @@ function love.mousemoved(x,y,dx,dy)
 end
 
 function love.joystickpressed(j,b)
-    b_to_k ={        [1] ="x"
+    b_to_k ={
+        [1] ="x"
     }
     if b_to_k[b]~= nil then
         print(j,b)

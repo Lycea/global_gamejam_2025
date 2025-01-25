@@ -15,13 +15,17 @@ local function distance(self ,other)
   return math.sqrt(math.pow(dx,2)+math.pow(dy,2))
 end
 
-
+function enemy:info()
+  print(self.pos.x,self.pos.y)
+  print(self.size.w,self.size.h)
+end
 function enemy:new(x,y,w,h,max_hp)
   self.pos = { x = x, y = y }
   self.max_hp = max_hp
   self.current_hp = self.max_hp
   self.size={w=w,h=h}
-  self.speed = 0.05
+  self.speed = 0.03
+  self.dmg=5
 end
 
 function enemy:draw()
@@ -34,7 +38,6 @@ function enemy:update(dt , goal)
 
   local perc_to_move =  self.speed / dist
 
-  print("perc",perc_to_move)
   local new_x,new_y = lerp_point(self.pos.x,self.pos.y,goal.pos.x,goal.pos.y,perc_to_move)
  self.pos.x = new_x
  self.pos.y = new_y

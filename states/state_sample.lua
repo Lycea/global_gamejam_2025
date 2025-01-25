@@ -18,7 +18,7 @@ function sample_state:startup()
  active_player =player()
  stage=stage_handler("first_stage",enemies,active_player)
 
- table.insert(enemies,enemy(-40,-40, 10,10, 5))
+ --table.insert(enemies,enemy(-40,-40, 10,10, 5))
 end
 
 function sample_state:set_key_handle(handle)
@@ -29,16 +29,20 @@ function sample_state:draw()
   love.graphics.setColor(0,0,255,255)
   active_player:draw()
 
+  local enemy_num = 0
+
   love.graphics.setColor(255,0,0,255)
   love.graphics.push()
     love.graphics.translate(-active_player.pos.x +scr_w/2,-active_player.pos.y +scr_h/2)
-    print("player:",active_player.pos.x,active_player.pos.y)
 
     for idx,enemy_obj in pairs(enemies) do
+      enemy_num = enemy_num +1
       enemy_obj:draw()
     end
 
   love.graphics.pop()
+
+  love.graphics.print( " DEBUG:\n  hp:"..active_player.current_hp.."\n  enemies:"..enemy_num.."\n  fps"..love.timer.getFPS())
 end
 
 
@@ -54,7 +58,6 @@ function sample_state:update(dt, key_list)
     if action["move"] and game_state == GameStates.PLAYING then
       movement.x = movement.x + action["move"][1]
       movement.y = movement.y + action["move"][2]
-      print(movement.x, movement.y)
     end
 
     active_player:move(movement.x,movement.y)
@@ -63,6 +66,7 @@ function sample_state:update(dt, key_list)
 
   for idx, enemy_obj in pairs(enemies) do
     enemy_obj:update(dt, active_player)
+    active_player:collide_enemy(enemy_obj)
   end
   stage:update(dt)
 end

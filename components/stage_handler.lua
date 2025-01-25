@@ -6,7 +6,7 @@ local stage_handler = class_base:extend()
 
 
 function stage_handler:new(stage,enemy_list,player)
-  self.spawn_interval = 0.5
+  self.spawn_interval = 0.1
   self.sub_stage_timing = 10000000
   self.substages = {}
 
