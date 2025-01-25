@@ -1,0 +1,26 @@
+name: Love2d with own actions
+
+on: 
+  push:
+    branches: ["master","*"]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+concurrency:
+  group: "pages"
+  cancel-in-progress: false
+
+jobs:
+  build-and-deploy:
+    runs-on: ubuntu-latest
+    environment: dev
+    steps:
+    - name: 'Checkout GitHub Action'
+      uses: actions/checkout@v4
+      with:
+        submodules: 'true'
+    - uses: Lycea/gh-common-pipelines/love2d/web-build-deploy@love2d_actions
