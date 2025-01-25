@@ -1,22 +1,24 @@
 local sample_state =class_base:extend()
 local player =require("../components/player")
+local enemy = require("../components/enemy")
+local stage_handler = require("../components/stage_handler")
 
 local active_player = nil
 local enemies = {}
 
 local key_handler = nil
-
+local stage = nil
 function sample_state:new()
 
-    
 end
 
 
 function sample_state:startup()
  print("startup")
  active_player =player()
+ stage=stage_handler("first_stage",enemies,active_player)
 
- table.insert(enemies,{pos={x=-40,y=-40}})
+ table.insert(enemies,enemy(-40,-40, 10,10, 5))
 end
 
 function sample_state:set_key_handle(handle)
@@ -32,8 +34,8 @@ function sample_state:draw()
     love.graphics.translate(-active_player.pos.x +scr_w/2,-active_player.pos.y +scr_h/2)
     print("player:",active_player.pos.x,active_player.pos.y)
 
-    for idx,enemy in pairs(enemies) do
-      love.graphics.rectangle("line",enemy.pos.x,enemy.pos.y,10,10)
+    for idx,enemy_obj in pairs(enemies) do
+      enemy_obj:draw()
     end
 
   love.graphics.pop()
@@ -56,7 +58,13 @@ function sample_state:update(dt, key_list)
     end
 
     active_player:move(movement.x,movement.y)
+
   end
+
+  for idx, enemy_obj in pairs(enemies) do
+    enemy_obj:update(dt, active_player)
+  end
+  stage:update(dt)
 end
 
 function sample_state:shutdown()
