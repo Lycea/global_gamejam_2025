@@ -19,7 +19,7 @@ end
 
 function player:draw()
   love.graphics.print(self.current_hp)
-  love.graphics.rectangle("line",scr_w/2 -20,scr_h/2 -30, 40,60)
+  love.graphics.rectangle("line",scr_w/2 -self.size.w/2 ,scr_h/2 -self.size.h/2  , self.size.w, self.size.h)
 end
 
 
@@ -44,11 +44,16 @@ end
 
 function player:collide(other)
 
-  local other_points = h_.pos_size_to_two_points(other.pos, other.size)
-  local self_points  = h_.pos_size_to_two_points(self.pos, self.size)
+  if math.abs(self.pos.x - other.pos.x)  < self.size.w + other.size.w then
 
-  return h_.rect_collision_tables(self_points[1],self_points[2],
-                                  other_points[1],other_points[2])
+    local other_points = h_.pos_size_to_two_points(other.pos, other.size)
+    local self_points  = h_.pos_size_to_two_points(self.pos, self.size)
+
+    return h_.rect_collision_tables(self_points[1],self_points[2],
+                                    other_points[1],other_points[2])
+  end
+
+  return false
 end
 
 

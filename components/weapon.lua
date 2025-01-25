@@ -44,12 +44,23 @@ function weapon:update(dt)
     p.pos.y = p.pos.y + (p.m_y * p.speed) * dt
   end
 
+  local remove_list = {}
+
   --check collisiones (scarry stuff)
   for i,p in pairs(particles) do
-
+    for en_i ,enemy in pairs(self.enemies) do
+      if math.abs( p.pos.x - enemy.pos.x ) < 40 then
+        if h_.circle_rectangle_collision(p.pos.x,p.pos.y,p.size.w,
+                                enemy.pos.x,enemy.pos.y,enemy.size.w,enemy.size.h) == true then
+          table.insert(remove_list,1, en_i)
+        end
+      end
+    end
   end
 
-
+  for id ,v in ipairs(remove_list) do
+    table.remove(self.enemies,v)
+  end
 
   --add new particle(s) on timer
   if self.spawn_timer:check() then
@@ -61,7 +72,8 @@ function weapon:update(dt)
       m_x = self.last_valid_movement.x,
       m_y = self.last_valid_movement.y,
       size = { w = 10, h = 10 },
-      speed = 100
+      speed = 400,
+      
     }
     table.insert(particles,new_bubble)
   end

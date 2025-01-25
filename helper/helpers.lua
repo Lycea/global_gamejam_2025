@@ -69,11 +69,27 @@ function helper.circ_collision(x1, y1, r1, x2, y2, r2)
   return distance_squared <= radii_sum * radii_sum
 end
 
+
 function helper.circ_point_collision(x1,y1,r1,x2,y2)
   if helper.distance({x=x1,y=y1},{x=x2,y=y2}) < r1 then
     return true
   end
     return false
+end
+
+
+function helper.circle_rectangle_collision(cx, cy, r, rx, ry, rw, rh)
+  -- Find the closest point on the rectangle to the circle's center
+  local closestX = math.max(rx, math.min(cx, rx + rw))
+  local closestY = math.max(ry, math.min(cy, ry + rh))
+
+  -- Calculate the squared distance between the circle's center and the closest point
+  local dx = closestX - cx
+  local dy = closestY - cy
+  local distanceSquared = dx * dx + dy * dy
+
+  -- Check if the distance is less than or equal to the circle's radius squared
+  return distanceSquared <= r * r
 end
 
 
