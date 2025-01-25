@@ -15,7 +15,7 @@ end
 
 function sample_state:startup()
  print("startup")
- active_player =player()
+ active_player =player(enemies)
  stage=stage_handler("first_stage",enemies,active_player)
 
  --table.insert(enemies,enemy(-40,-40, 10,10, 5))
@@ -40,6 +40,7 @@ function sample_state:draw()
       enemy_obj:draw()
     end
 
+    active_player.weapon:draw()
   love.graphics.pop()
 
   love.graphics.print( " DEBUG:\n  hp:"..active_player.current_hp.."\n  enemies:"..enemy_num.."\n  fps"..love.timer.getFPS())
@@ -48,6 +49,7 @@ end
 
 
 function sample_state:update(dt, key_list)
+  
   for key, v in pairs(key_list) do
     attack       = false
     movement     = { x = 0, y = 0 }
@@ -64,11 +66,11 @@ function sample_state:update(dt, key_list)
 
   end
 
-
   for idx, enemy_obj in pairs(enemies) do
     enemy_obj:update(dt, active_player)
     active_player:collide_enemy(enemy_obj)
   end
+  active_player:update(dt)
   stage:update(dt)
 end
 

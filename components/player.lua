@@ -1,27 +1,32 @@
 local player = class_base:extend()
 local weapon = require("../components/weapon")
 
-function player:new()
+function player:new(enemies)
  self.pos ={x=0,y=0}
+ self.last_movement ={x=0,y=0}
  self.max_hp = 100
  self.current_hp = self.max_hp
- self.weapon = weapon()
  self.invis_time = 0.3
  self.invis_timer = timer(self.invis_time)
  self.alive = true
  self.size = {w=20,h=20}
- self.norm_speed = 40
+ self.norm_speed = 80
  self.cur_speed = self.norm_speed
+
+ self.weapon = weapon(self,enemies)
 end
 
 
 function player:draw()
   love.graphics.print(self.current_hp)
   love.graphics.rectangle("line",scr_w/2 -20,scr_h/2 -30, 40,60)
-  self.weapon:draw()
 end
 
-function player:move(x,y,dt)
+
+function player:move(x, y, dt)
+  self.last_movement.x = self.last_movement.x + x
+  self.last_movement.y = self.last_movement.y + y
+
   x=x*self.cur_speed
   y=y*self.cur_speed
 
@@ -30,7 +35,11 @@ function player:move(x,y,dt)
   self.pos.y = self.pos.y + (y * dt)
 end
 
-function player:update()
+function player:update(dt)
+  self.weapon:update(dt)
+
+  self.last_movement.x = 0
+  self.last_movement.y = 0
 end
 
 function player:collide(other)
@@ -42,11 +51,13 @@ function player:collide(other)
                                   other_points[1],other_points[2])
 end
 
+
 function player:collide_item(item)
   if self:collide(item) == true then 
 
   end
 end
+
 
 function player:collide_enemy(enemy)
   if self:collide(enemy) == true then
