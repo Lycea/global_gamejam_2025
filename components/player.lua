@@ -22,7 +22,7 @@ function player:new(enemies)
 
  self.exp_needed = 50
  self.cur_exp = 0
- self.exp_multi = 1.1
+ self.exp_multi = 1.30
 end
 
 
@@ -39,7 +39,6 @@ function player:move(x, y, dt)
   x=x*self.cur_speed
   y=y*self.cur_speed
 
-  print(x,y)
   self.pos.x = self.pos.x + (x  * dt)
   self.pos.y = self.pos.y + (y * dt)
 end

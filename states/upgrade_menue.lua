@@ -63,8 +63,6 @@ function upgrade_menue:draw()
     }
 
     local tmp_choice = self.available_choices[choice]
-    print("choice",choice)
-    print("color :" ,tmp_choice[3])
     filled_bordered_rect(upgrade_pos,_rect_sizes, col[tmp_choice[3]],col.black, self.cur_idx == c+1 )
 
     gr.print(tmp_choice[1],upgrade_pos.x + 5, upgrade_pos.y +5 )

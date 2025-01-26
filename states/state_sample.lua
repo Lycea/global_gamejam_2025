@@ -81,7 +81,6 @@ end
 
 function sample_state:update(dt, key_list)
 
-
   if active_player.alive and is_upgrading == false then
     for key, v in pairs(key_list) do
       attack       = false
@@ -114,6 +113,8 @@ function sample_state:update(dt, key_list)
 
     stage:update(dt)
   end
+
+
   --  xp formula   = 1.1^lvl
   if is_upgrading == true then
     local movement = { 0, 0 }
@@ -132,8 +133,10 @@ function sample_state:update(dt, key_list)
     end
 
     if selected == true then
-      upgrade_screen:selected()
+      local selected_upgrade =upgrade_screen:selected()
       is_upgrading = false
+
+      active_player.weapon:upgrade(selected_upgrade)
     end
 
     if idx_change_timer:check() then

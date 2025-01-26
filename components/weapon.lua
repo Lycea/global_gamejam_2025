@@ -31,11 +31,12 @@ function weapon:draw()
 end
 
 local upgrade_info_list ={
-  pirce_amount = { 1 , 7 , 7, "more pirce" ,"Increases the amount \n of pirce by a bubble +1", "white" },
-  particle_spawn_amount = {1, 10, 9, "more bubbles", "Increase the amount of bubbles per blow +1" , "green" },
-  spawn_angle = {5, 90, 12, "spread increase", "Incrise the area spread\n of bubbles +1 ", "white" },
-  particle_spawn_time = {-0.05, 0.05, 9, "Faster bubbles", "Increase the speed\n at which bubbles spawn", "white"  },
-  spawn_directions ={1,3, 2, "More directions","Increase the directions\n in which bubbles are blown\n simultaneously", "pink" }
+  particle_spawn_time = { -0.05, 0.05, 9, "Faster bubbles", "Increase the speed\n at which bubbles spawn", "white" },
+  pirce_amount = { 1, 7, 7, "more pirce", "Increases the amount \n of pirce by a bubble +1", "white" },
+  particle_spawn_amount = { 1, 10, 9, "more bubbles", "Increase the amount of bubbles per blow +1", "green" },
+  spawn_angle = { 5, 90, 12, "spread increase", "Incrise the area spread\n of bubbles +1 ", "white" },
+  spawn_directions = { 1, 3, 2, "More directions",
+    "Increase the directions\n in which bubbles are blown\n simultaneously", "pink" }
 }
 
 function weapon:get_upgrade_list()
@@ -50,7 +51,11 @@ function weapon:get_upgrade_list()
 end
 
 function weapon:upgrade(upgrade_name)
+  print(upgrade_name)
+  print(self[upgrade_name])
+  self[upgrade_name] = math.min( self[upgrade_name] + upgrade_info_list[upgrade_name][1] , upgrade_info_list[upgrade_name][2])
 
+  self.spawn_timer=timer(self.particel_spawn_time)
 end
 
 function weapon:update(dt)
@@ -91,18 +96,23 @@ function weapon:update(dt)
 
   --add new particle(s) on timer
   if self.spawn_timer:check() then
-    local new_bubble = {
-      pos={
-        x = self.parent.pos.x,
-        y = self.parent.pos.y
-      },
-      m_x = self.last_valid_movement.x,
-      m_y = self.last_valid_movement.y,
-      size = { w = 10, h = 10 },
-      speed = 400,
-      
-    }
-    table.insert(particles,new_bubble)
+
+    if self.spawn_directions >= 1 then
+      for i=1, self.particle_spawn_amount  do
+        local new_bubble = {
+          pos = {
+            x = self.parent.pos.x + love.math.random(-4, 4),
+            y = self.parent.pos.y + love.math.random(-4, 4)
+          },
+          m_x = self.last_valid_movement.x,
+          m_y = self.last_valid_movement.y,
+          size = { w = 10, h = 10 },
+          speed = 400,
+
+        }
+        table.insert(particles, new_bubble)
+      end
+    end
   end
 
   return gained_exp
