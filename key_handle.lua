@@ -5,14 +5,13 @@
  
  
  key_mapper={
-   left = "left",
-   right = "right",
-   up="up",
-   down="down",
+   a = "left",
+   d = "right",
+   w ="up",
+   s ="down",
    
    escape="exit",
-   u ="use",
-   x = "attack",
+   ["space"] ="use",
    ["return"] = "select",
    
    mt={
@@ -73,10 +72,32 @@ key_list_paused={
      }
 }
 
-setmetatable(key_list_main_manue,key_list_main_manue.mt)
-setmetatable(key_list_paused,key_list_paused.mt)
-setmetatable(key_list_game,key_list_game.mt)
 
+key_list_end_menue = {
+  use = { selected_item = true },
+  mt = {
+    __index = function(table, key)
+      return {}
+    end
+  }
+}
+
+key_list_upgrade_menue = {
+  left = { menue_idx_change = { -1, 0 } },
+  right = { menue_idx_change = { 1, 0 } },
+  use = { selected_item = true },
+  mt = {
+    __index = function(table, key)
+      return {}
+    end
+  }
+}
+setmetatable(key_list_main_manue, key_list_main_manue.mt)
+setmetatable(key_list_paused, key_list_paused.mt)
+setmetatable(key_list_game, key_list_game.mt)
+
+setmetatable(key_list_upgrade_menue, key_list_upgrade_menue.mt)
+setmetatable(key_list_end_menue, key_list_end_menue.mt)
 
 
 
@@ -90,6 +111,17 @@ local exit_timer
 function handle_main_menue(key)
   debuger.on()
   return key_list_main_manue[key_mapper[key]]
+end
+
+
+function handle_end_menue(key)
+  debuger.on()
+  return key_list_end_menue[key_mapper[key]]
+end
+
+function handle_upgrade_menue(key)
+  debuger.on()
+  return key_list_upgrade_menue[key_mapper[key]]
 end
 
 function handle_keys(key)

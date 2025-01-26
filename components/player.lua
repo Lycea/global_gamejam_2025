@@ -4,12 +4,17 @@ local weapon = require("../components/weapon")
 function player:new(enemies)
  self.pos ={x=0,y=0}
  self.last_movement ={x=0,y=0}
+
  self.max_hp = 100
  self.current_hp = self.max_hp
+
  self.invis_time = 0.3
  self.invis_timer = timer(self.invis_time)
+
  self.alive = true
+
  self.size = {w=20,h=20}
+
  self.norm_speed = 80
  self.cur_speed = self.norm_speed
 
