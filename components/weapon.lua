@@ -7,7 +7,7 @@ function weapon:new(parent,enemies)
   self.particel_spawn_time = 0.5
   self.spawn_timer = timer(self.particel_spawn_time)
 
-  self.pirce_amount = 0
+  self.pirce_amount = 1
 
   self.particle_spawn_amount = 1
   self.spawn_angle = 30
@@ -31,7 +31,7 @@ function weapon:draw()
 end
 
 local upgrade_info_list ={
-  particle_spawn_time = { -0.05, 0.05, 9, "Faster bubbles", "Increase the speed\n at which bubbles spawn", "white" },
+  particel_spawn_time = { -0.05, 10, 9, "Faster bubbles", "Increase the speed\n at which bubbles spawn", "white" },
   pirce_amount = { 1, 7, 7, "more pirce", "Increases the amount \n of pirce by a bubble +1", "white" },
   particle_spawn_amount = { 1, 10, 9, "more bubbles", "Increase the amount of bubbles per blow +1", "green" },
   spawn_angle = { 5, 90, 12, "spread increase", "Incrise the area spread\n of bubbles +1 ", "white" },
@@ -53,9 +53,27 @@ end
 function weapon:upgrade(upgrade_name)
   print(upgrade_name)
   print(self[upgrade_name])
-  self[upgrade_name] = math.min( self[upgrade_name] + upgrade_info_list[upgrade_name][1] , upgrade_info_list[upgrade_name][2])
+  self[upgrade_name] =  self[upgrade_name] + upgrade_info_list[upgrade_name][1] 
 
   self.spawn_timer=timer(self.particel_spawn_time)
+end
+
+
+function weapon:spawn_bubble(x,y)
+  local new_bubble = {
+    pos = {
+      x = self.parent.pos.x + love.math.random(-4, 4),
+      y = self.parent.pos.y + love.math.random(-4, 4)
+    },
+    m_x = x,
+    m_y = y,
+    pirce = self.pirce_amount,
+    size = { w = 10, h = 10 },
+    speed = 400,
+
+  }
+  print("bubble,pirce",new_bubble.pirce)
+  table.insert(particles, new_bubble)
 end
 
 function weapon:update(dt)
@@ -81,6 +99,12 @@ function weapon:update(dt)
       if math.abs( p.pos.x - enemy.pos.x ) < 40 then
         if h_.circle_rectangle_collision(p.pos.x,p.pos.y,p.size.w,
                                 enemy.pos.x,enemy.pos.y,enemy.size.w,enemy.size.h) == true then
+          
+          p.pirce = p.pirce -1
+          if p.pirce <=0 then
+            table.insert(remove_list_particles,1, i)
+          end
+
           table.insert(remove_list,1, en_i)
         end
       end
@@ -89,30 +113,46 @@ function weapon:update(dt)
 
   local gained_exp = 0
 
+  local check_removed ={}
   for id ,v in ipairs(remove_list) do
-    local tmp_enemy = table.remove(self.enemies,v)
-    gained_exp = gained_exp + tmp_enemy.exp
+    if check_removed[v] == nil then
+
+      local tmp_enemy = table.remove(self.enemies, v)
+      gained_exp = gained_exp + tmp_enemy.exp
+      check_removed[v] = true
+    end
+  end
+
+  for id, v in ipairs(remove_list_particles) do
+      local tmp_part = table.remove(particles, v)
   end
 
   --add new particle(s) on timer
   if self.spawn_timer:check() then
 
-    if self.spawn_directions >= 1 then
+    if self.spawn_directions == 1 then
       for i=1, self.particle_spawn_amount  do
-        local new_bubble = {
-          pos = {
-            x = self.parent.pos.x + love.math.random(-4, 4),
-            y = self.parent.pos.y + love.math.random(-4, 4)
-          },
-          m_x = self.last_valid_movement.x,
-          m_y = self.last_valid_movement.y,
-          size = { w = 10, h = 10 },
-          speed = 400,
 
-        }
-        table.insert(particles, new_bubble)
+        self:spawn_bubble(self.last_valid_movement.x,self.last_valid_movement.y)
       end
     end
+
+    if self.spawn_directions == 2 then
+      for i = 1, self.particle_spawn_amount do
+        self:spawn_bubble(self.last_valid_movement.x, self.last_valid_movement.y)
+        self:spawn_bubble(self.last_valid_movement.x*-1, self.last_valid_movement.y*-1)
+      end
+    end
+
+    if self.spawn_directions >= 3 then
+      for i = 1, self.particle_spawn_amount do
+        self:spawn_bubble(1, 0)
+        self:spawn_bubble(-1, 0)
+        self:spawn_bubble(0, -1)
+        self:spawn_bubble(0, 1)
+      end
+    end
+
   end
 
   return gained_exp
