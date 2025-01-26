@@ -11,7 +11,7 @@ function weapon:new(parent,enemies)
 
   self.particle_spawn_amount = 1
   self.spawn_angle = 30
-  self.spawn_directions=1   -- 1,2,4 possible
+  self.spawn_directions=1   -- 1,2,3 possible
 
   self.rotation_speed = 0
   self.rotation_offset = 0
@@ -30,6 +30,28 @@ function weapon:draw()
   end
 end
 
+local upgrade_info_list ={
+  pirce_amount = { 1 , 7 , 7, "more pirce" ,"Increases the amount \n of pirce by a bubble +1", "white" },
+  particle_spawn_amount = {1, 10, 9, "more bubbles", "Increase the amount of bubbles per blow +1" , "green" },
+  spawn_angle = {5, 90, 12, "spread increase", "Incrise the area spread\n of bubbles +1 ", "white" },
+  particle_spawn_time = {-0.05, 0.05, 9, "Faster bubbles", "Increase the speed\n at which bubbles spawn", "white"  },
+  spawn_directions ={1,3, 2, "More directions","Increase the directions\n in which bubbles are blown\n simultaneously", "pink" }
+}
+
+function weapon:get_upgrade_list()
+  local changed_list ={}
+
+  for name, upgrade  in pairs(upgrade_info_list) do
+    
+    table.insert(changed_list,{ upgrade[4] , upgrade[5] , upgrade[6] , 0, upgrade[3], 0 , name  })
+  end
+
+  return changed_list
+end
+
+function weapon:upgrade(upgrade_name)
+
+end
 
 function weapon:update(dt)
   if self.parent.last_movement.x == 0 and
@@ -39,12 +61,14 @@ function weapon:update(dt)
     self.last_valid_movement.y = self.parent.last_movement.y
     self.last_valid_movement.x = self.parent.last_movement.x
   end
+
   for i, p in pairs(particles) do
     p.pos.x = p.pos.x + (p.m_x * p.speed) * dt 
     p.pos.y = p.pos.y + (p.m_y * p.speed) * dt
   end
 
   local remove_list = {}
+  local remove_list_particles = {}
 
   --check collisiones (scarry stuff)
   for i,p in pairs(particles) do
@@ -58,8 +82,11 @@ function weapon:update(dt)
     end
   end
 
+  local gained_exp = 0
+
   for id ,v in ipairs(remove_list) do
-    table.remove(self.enemies,v)
+    local tmp_enemy = table.remove(self.enemies,v)
+    gained_exp = gained_exp + tmp_enemy.exp
   end
 
   --add new particle(s) on timer
@@ -78,7 +105,7 @@ function weapon:update(dt)
     table.insert(particles,new_bubble)
   end
 
-
+  return gained_exp
 
 end
 

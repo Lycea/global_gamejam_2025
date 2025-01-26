@@ -83,8 +83,8 @@ key_list_end_menue = {
 }
 
 key_list_upgrade_menue = {
-  left = { menue_idx_change = { -1, 0 } },
-  right = { menue_idx_change = { 1, 0 } },
+  left = { idx_change = { -1, 0 } },
+  right = { idx_change = { 1, 0 } },
   use = { selected_item = true },
   mt = {
     __index = function(table, key)

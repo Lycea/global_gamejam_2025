@@ -19,6 +19,10 @@ function player:new(enemies)
  self.cur_speed = self.norm_speed
 
  self.weapon = weapon(self,enemies)
+
+ self.exp_needed = 50
+ self.cur_exp = 0
+ self.exp_multi = 1.1
 end
 
 
@@ -40,11 +44,24 @@ function player:move(x, y, dt)
   self.pos.y = self.pos.y + (y * dt)
 end
 
+
+
 function player:update(dt)
-  self.weapon:update(dt)
+  local exp_gained = self.weapon:update(dt)
+  local level_up = false
+
+  if self.cur_exp + exp_gained >= self.exp_needed then
+    self.cur_exp = math.abs( self.exp_needed - (self.cur_exp + exp_gained) )
+    level_up = true
+    self.exp_needed = self.exp_needed * self.exp_multi
+  else
+    self.cur_exp = self.cur_exp + exp_gained
+  end
 
   self.last_movement.x = 0
   self.last_movement.y = 0
+
+  return level_up
 end
 
 function player:collide(other)

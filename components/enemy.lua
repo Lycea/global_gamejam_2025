@@ -26,6 +26,7 @@ function enemy:new(x,y,w,h,max_hp)
   self.size={w=w,h=h}
   self.speed = 30
   self.dmg=5
+  self.exp = max_hp + self.dmg *0.2 
 end
 
 function enemy:draw()

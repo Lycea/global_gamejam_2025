@@ -25,9 +25,7 @@ gr = love.graphics
 
 function upgrade_menue:select_upgrades()
   self.cur_selections ={
-    {"upgrade 1", " TODO information","white",0, 20,0, "upg_1" },
-    {"upgrade 2", " TODO","green",0, 20,0, "upg_1" },
-    {"upgrade 3", " TODO ","pink",0, 20,0, "upg_1"}
+    1,2,3
   }
 end
 
@@ -63,11 +61,14 @@ function upgrade_menue:draw()
       x = window_pos.x + 20 + c*10  + _rect_sizes.w * c ,
       y = window_pos.y + 20
     }
-    
-    filled_bordered_rect(upgrade_pos,_rect_sizes, col[choice[3]],col.black, self.cur_idx == c+1 )
 
-    gr.print(choice[1],upgrade_pos.x + 5, upgrade_pos.y +5 )
-    gr.print(choice[2],upgrade_pos.x +5, upgrade_pos.y + 20)
+    local tmp_choice = self.available_choices[choice]
+    print("choice",choice)
+    print("color :" ,tmp_choice[3])
+    filled_bordered_rect(upgrade_pos,_rect_sizes, col[tmp_choice[3]],col.black, self.cur_idx == c+1 )
+
+    gr.print(tmp_choice[1],upgrade_pos.x + 5, upgrade_pos.y +5 )
+    gr.print(tmp_choice[2],upgrade_pos.x +5, upgrade_pos.y + 20)
 
     c=c+1
   end
@@ -75,7 +76,7 @@ end
 
 function upgrade_menue:upgrade(movement)
 
-  self.cur_idx = self.cur_idx + movement
+  self.cur_idx = self.cur_idx + movement[1]
 
   if self.cur_idx < 1 then
     self.cur_idx = self.choice_num
@@ -86,8 +87,13 @@ function upgrade_menue:upgrade(movement)
 
 end
 
-function upgrade_menue:selected(idx)
+function upgrade_menue:selected()
+  local name = self.available_choices[ self.cur_selections[self.cur_idx] ][7]
+  
+  print("selected upgrade", name)
 
+  self.available_choices[self.cur_selections[self.cur_idx]][6] = self.available_choices[self.cur_selections[self.cur_idx]][6] +1
+  return name
 end
 
 

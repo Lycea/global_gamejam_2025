@@ -18,9 +18,11 @@ local level_up = false
 local end_screen = nil
 local upgrade_screen = nil
 
+local idx_change_timer = timer(0.1)
+
+stats = {}
 
 
-local stats = {}
 
 function sample_state:new()
 
@@ -37,7 +39,7 @@ function sample_state:startup()
 
  --table.insert(enemies,enemy(-40,-40, 10,10, 5))
  end_screen = end_menue()
- upgrade_screen = upgrade_menue(3,{"ree","what","something"})
+ upgrade_screen = upgrade_menue(3, active_player.weapon:get_upgrade_list() )
  upgrade_screen:select_upgrades()
 end
 
@@ -77,7 +79,6 @@ function sample_state:draw()
 end
 
 
-
 function sample_state:update(dt, key_list)
 
 
@@ -101,13 +102,43 @@ function sample_state:update(dt, key_list)
       enemy_obj:update(dt, active_player)
       active_player:collide_enemy(enemy_obj)
     end
-    active_player:update(dt)
+
+    level_up = active_player:update(dt)
+
+
+    if level_up == true then
+      upgrade_screen:select_upgrades()
+      level_up = false
+      is_upgrading = true
+    end
+
     stage:update(dt)
   end
-
+  --  xp formula   = 1.1^lvl
   if is_upgrading == true then
+    local movement = { 0, 0 }
+    local selected = false
 
+    for key, v in pairs(key_list) do
+      local action = handle_upgrade_menue(key)
 
+      if action["idx_change"] then
+        movement = action["idx_change"]
+      end
+
+      if action["selected_item"] then
+        selected = true
+      end
+    end
+
+    if selected == true then
+      upgrade_screen:selected()
+      is_upgrading = false
+    end
+
+    if idx_change_timer:check() then
+      upgrade_screen:upgrade(movement)
+    end
   end
 
   if active_player.alive == false then
@@ -119,7 +150,6 @@ function sample_state:update(dt, key_list)
     main_menue_item = 1
 
     selected_state_idx = 1
-
 
   end
 end
