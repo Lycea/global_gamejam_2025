@@ -25,8 +25,15 @@ gr = love.graphics
 
 function upgrade_menue:select_upgrades()
   self.cur_selections ={
-    1,2,3
+    --1,2,3
   }
+
+  for num=1, self.choice_num do
+
+    table.insert(self.cur_selections, math.floor(love.math.random(1, #self.available_choices ) +0.5) )
+
+  end
+
 end
 
 function filled_bordered_rect(pos, size, outside_c, inside_c, selected)

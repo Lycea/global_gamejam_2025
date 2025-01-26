@@ -113,6 +113,8 @@ function weapon:update(dt)
 
   local gained_exp = 0
 
+  table.sort(remove_list, function (a, b) return a > b end  )
+
   local check_removed ={}
   for id ,v in ipairs(remove_list) do
     if check_removed[v] == nil then
