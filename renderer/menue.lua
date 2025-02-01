@@ -52,7 +52,7 @@ end
 
 function main_menue()
   
-  menue("Sample menue",{"Start new","Exit"},0,0,400,400,main_menue_item,false)
+  menue("Bubble slash",{"Start new","Exit"},0,0,400,400,main_menue_item,false)
 end
 
 
