@@ -70,6 +70,7 @@ function weapon:spawn_bubble(x,y)
     pirce = self.pirce_amount,
     size = { w = 10, h = 10 },
     speed = 400,
+    lifetime = 1
 
   }
   print("bubble,pirce",new_bubble.pirce)
@@ -94,21 +95,27 @@ function weapon:update(dt)
   local remove_list_particles = {}
 
   --check collisiones (scarry stuff)
-  for i,p in pairs(particles) do
-    for en_i ,enemy in pairs(self.enemies) do
-      if math.abs( p.pos.x - enemy.pos.x ) < 40 then
-        if h_.circle_rectangle_collision(p.pos.x,p.pos.y,p.size.w,
-                                enemy.pos.x,enemy.pos.y,enemy.size.w,enemy.size.h) == true then
-          
-          p.pirce = p.pirce -1
-          if p.pirce <=0 then
-            table.insert(remove_list_particles,1, i)
+  for i, p in pairs(particles) do
+    local added_to_remove = false
+    p.lifetime = p.lifetime - dt
+    for en_i, enemy in pairs(self.enemies) do
+      if math.abs(p.pos.x - enemy.pos.x) < 40 then
+        if h_.circle_rectangle_collision(p.pos.x, p.pos.y, p.size.w,
+                                         enemy.pos.x, enemy.pos.y, enemy.size.w, enemy.size.h) == true then
+          p.pirce = p.pirce - 1
+          if p.pirce <= 0 then
+            table.insert(remove_list_particles, 1, i)
+            added_to_remove = true
           end
-
-          table.insert(remove_list,1, en_i)
+          
+          table.insert(remove_list, 1, en_i)
         end
       end
     end
+    if added_to_remove == false and p.lifetime < 0 then
+      table.insert(remove_list_particles,1,i)
+    end
+      
   end
 
   local gained_exp = 0
